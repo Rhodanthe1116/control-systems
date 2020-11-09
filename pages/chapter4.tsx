@@ -2,11 +2,11 @@ import Container from '../components/container'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
 import Head from 'next/head'
-import { CMS_NAME } from '../lib/constants'
 import Post from '../types/post'
 import { useState } from 'react'
-import { Line } from '@nivo/line'
+import { ResponsiveLine } from '@nivo/line'
 import { ScatterPlot } from '@nivo/scatterplot'
+import cn from 'classnames'
 
 const { sqrt, exp, PI, cos, sin, min } = Math
 
@@ -62,85 +62,87 @@ const Chapter = ({ allPosts }: Props) => {
         <>
             <Layout>
                 <Head>
-                    <title>Next.js Blog Example with {CMS_NAME}</title>
+                    <title>Interactive Control Systems</title>
                 </Head>
                 <Container>
                     <Intro />
-                    <div className="slidecontainer">
-                        Resolution {resolution}
-                        <br />
-                        <input value={resolution} onChange={(e) => setResolution(Number(e.target.value))} className="slider" id="myRange" />
-                    </div>
-                    <div className="slidecontainer">
-                        a {a}
-                        <br />
-                        <input value={a} onChange={handleAChange} className="slider" id="myRange" />
-                    </div>
-                    <div className="slidecontainer">
-                        b {b}
-                        <br />
-                        <input value={b} onChange={handleBChange} className="slider" id="myRange" />
-                    </div>
-                    <div className="slidecontainer">
-                        Natural Frequency Omegan {omegan}, 越大反應時間越短
-                        <br />
-                        <input value={omegan} onChange={(e) => setOmegan(Number(e.target.value))} type="range" min="0" max="5" step="0.1" className="slider" id="myRange" />
-                    </div>
-                    <div className="slidecontainer">
-                        Damping ratio {damp}, 越大overshoot越小
-                        <br />
-                        <input value={damp} onChange={(e) => setDamp(Number(e.target.value))} type="range" min="0" max="1" step="0.01" className="slider" id="myRange" />
-                    </div>
+                    <div className="flex flex-col md:flex-row md:justify-between">
 
-                    <p>
-                        Tp = PI / (omegan * sqrt(1 - damp ** 2)) = {Tp.toFixed(fixed)} 
-                    </p>
-                    <p>
-                        %overshoot = exp(-(damp * PI / sqrt(1 - damp ** 2))) * 100= {overshoot.toFixed(fixed)} 
-                    </p>
-                    <p>
-                        Ts = 4 / (damp * omegan) = {Ts.toFixed(fixed)}
-                    </p>
-                    <p>
-                        Tr = (0.8 + 2.5 * damp) / omegan = {Tr.toFixed(fixed)}
-                    </p>
-                    <div>
-                        <ScatterPlot
-                            data={[
-                                {
-                                    id: '1',
-                                    data: [
-                                        { x: -sigmad, y: omegad }
-                                    ]
-                                }
-                            ]}
-                            width={250}
-                            height={250}
-                            xScale={{ type: 'linear', min: -10, max: 10 }}
-                            yScale={{ type: 'linear', min: -10, max: 10 }}
-                            margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+                        <div className="">
+                            <div className="slidecontainer">
+                                Resolution {resolution}
+                                <br />
+                                <input value={resolution} onChange={(e) => setResolution(Number(e.target.value))} className="slider" id="myRange" />
+                            </div>
+                            <div className="slidecontainer">
+                                a {a}
+                                <br />
+                                <input value={a} onChange={handleAChange} className="slider" id="myRange" />
+                            </div>
+                            <div className="slidecontainer">
+                                b {b}
+                                <br />
+                                <input value={b} onChange={handleBChange} className="slider" id="myRange" />
+                            </div>
+                            <div className="slidecontainer">
+                                Natural Frequency Omegan {omegan}, 越大反應時間越短
+                        <br />
+                                <input value={omegan} onChange={(e) => setOmegan(Number(e.target.value))} type="range" min="0" max="5" step="0.1" className="slider" id="myRange" />
+                            </div>
+                            <div className="slidecontainer">
+                                Damping ratio {damp}, 越大overshoot越小
+                        <br />
+                                <input value={damp} onChange={(e) => setDamp(Number(e.target.value))} type="range" min="0" max="1" step="0.01" className="slider" id="myRange" />
+                            </div>
 
-                        />
-                        <Line
-                            data={generateDataFromFunction(c, 0, min(1.3 * Ts, 7), min(1.3 * Ts, 7) / resolution)}
-                            width={1000}
-                            height={500}
-                            enablePoints={false}
-                            xScale={{ type: 'linear', min: 0, max: 7 }}
-                            yScale={{ type: 'linear', min: 0, max: 2 }}
-                            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                            yFormat=" >-.2f"
-                            axisBottom={{
-                                tickRotation: 90,
-                            }}
-                        />
+                            <p>
+                                Tp = PI / (omegan * sqrt(1 - damp ** 2)) = {Tp.toFixed(fixed)}
+                            </p>
+                            <p>
+                                %overshoot = exp(-(damp * PI / sqrt(1 - damp ** 2))) * 100= {overshoot.toFixed(fixed)}
+                            </p>
+                            <p>
+                                Ts = 4 / (damp * omegan) = {Ts.toFixed(fixed)}
+                            </p>
+                            <p>
+                                Tr = (0.8 + 2.5 * damp) / omegan = {Tr.toFixed(fixed)}
+                            </p>
+                        </div>
+                        <div className="w-full">
 
+                            <div className="h-64">
+                                <ScatterPlot
+                                    data={[
+                                        {
+                                            id: '1',
+                                            data: [
+                                                { x: -sigmad, y: omegad }
+                                            ]
+                                        }
+                                    ]}
+                                    width={250}
+                                    height={250}
+                                    xScale={{ type: 'linear', min: -10, max: 10 }}
+                                    yScale={{ type: 'linear', min: -10, max: 10 }}
+                                    margin={{ top: 50, right: 50, bottom: 50, left: 50 }}
+
+                                />
+                            </div>
+                            <div className="h-64">
+                                <ResponsiveLine
+                                    data={generateDataFromFunction(c, 0, min(1.3 * Ts, 7), min(1.3 * Ts, 7) / resolution)}
+                                    enablePoints={false}
+                                    xScale={{ type: 'linear', min: 0, max: 7 }}
+                                    yScale={{ type: 'linear', min: 0, max: 2 }}
+                                    margin={{ top: 10, right: 30, bottom: 30, left: 30 }}
+                                    yFormat=" >-.2f"
+                                    axisBottom={{
+                                        tickRotation: 90,
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <br />
                     <br />
                 </Container>
             </Layout>
