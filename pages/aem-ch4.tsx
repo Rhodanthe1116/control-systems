@@ -8,8 +8,8 @@ import { ResponsiveLine } from '@nivo/line'
 import { ScatterPlot } from '@nivo/scatterplot'
 import cn from 'classnames'
 import 'katex/dist/katex.min.css';
-import { InlineMath, BlockMath } from 'react-katex';
 import markdownStyles from '../components/markdown-styles.module.css'
+const { InlineMath, BlockMath } = require('react-katex');
 
 const { sqrt, exp, PI, cos, sin, min } = Math
 
