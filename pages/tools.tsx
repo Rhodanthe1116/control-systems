@@ -1,12 +1,18 @@
+import { useState } from 'react'
+import cn from 'classnames'
 import Container from '../components/container'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
 import Head from 'next/head'
 import Post from '../types/post'
-import { useState } from 'react'
 import { ResponsiveLine } from '@nivo/line'
+
+import { create, all, inv, format } from 'mathjs'
+
 import { ScatterPlot } from '@nivo/scatterplot'
-import cn from 'classnames'
+
+const config = { }
+const math = create(all, config)
 
 const { sqrt, exp, PI, cos, sin, min } = Math
 
@@ -45,7 +51,11 @@ const Chapter = ({ allPosts }: Props) => {
     const Cfinal = 1
     const k = 1
     const fixed = 3;
-
+    const im = inv([
+        [-4, 9, -3],
+        [0, -4, 7],
+        [-1, -4, -9]
+    ])
     function handleAChange(e: React.ChangeEvent<HTMLInputElement>) {
         const newA = Number(e.currentTarget.value)
         setA(newA)
@@ -67,7 +77,10 @@ const Chapter = ({ allPosts }: Props) => {
                 <Container>
                     <Intro />
                     <div className="flex flex-col md:flex-row md:justify-between">
-
+                        <p>
+                            inverse matrix <br/>
+                             {format(im, 2)}
+                        </p>
                         <div className="">
                             <div>
                                 <p>

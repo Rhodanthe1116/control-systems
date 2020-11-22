@@ -7,6 +7,9 @@ import { useState } from 'react'
 import { ResponsiveLine } from '@nivo/line'
 import { ScatterPlot } from '@nivo/scatterplot'
 import cn from 'classnames'
+import 'katex/dist/katex.min.css';
+import { InlineMath, BlockMath } from 'react-katex';
+import markdownStyles from '../components/markdown-styles.module.css'
 
 const { sqrt, exp, PI, cos, sin, min } = Math
 
@@ -68,12 +71,9 @@ const Chapter = ({ allPosts }: Props) => {
                     <Intro />
                     <div className="flex flex-col md:flex-row md:justify-between">
 
-                        <div className="">
-                            <div>
-                                <p>
-                                    b / s^2 + as + b
-                                </p>
-                            </div>
+                        <div>
+
+
                             <div className="slidecontainer">
                                 Resolution {resolution}
                                 <br />
@@ -100,12 +100,13 @@ const Chapter = ({ allPosts }: Props) => {
                                 <input value={damp} onChange={(e) => setDamp(Number(e.target.value))} type="range" min="0" max="1" step="0.01" className="slider" id="myRange" />
                             </div>
 
-                            <p>
-                                Tp = PI / (omegan * sqrt(1 - damp ** 2)) = {Tp.toFixed(fixed)}
-                            </p>
-                            <p>
-                                %overshoot = exp(-(damp * PI / sqrt(1 - damp ** 2))) * 100= {overshoot.toFixed(fixed)}
-                            </p>
+                            <InlineMath math="Tp = \frac{\pi}{\omega_n \sqrt{1 - \zeta^2}} = \ " />
+                            <InlineMath math={`${Tp.toFixed(fixed)}`} />
+                            <br />
+
+                            <InlineMath math="\%overshoot = e^{-(\zeta\pi / \sqrt{1 - \zeta^2})} * 100 = \ " />
+                            <InlineMath math={`${Tp.toFixed(fixed)}`} />
+                            <br />
                             <p>
                                 Ts = 4 / (damp * omegan) = {Ts.toFixed(fixed)}
                             </p>
@@ -147,6 +148,56 @@ const Chapter = ({ allPosts }: Props) => {
                                 />
                             </div>
                         </div>
+
+
+                    </div>
+
+                    <div className={markdownStyles['markdown']}>
+                        <BlockMath math="my'' + cy' + ky = 0" />
+                        <BlockMath math="y'' + \frac{c}{m}y' + \frac{k}{m}y = 0" />
+                        <BlockMath math={String.raw`\begin{bmatrix}
+                                            y_1' \\ 
+                                            y_2' 
+                                            \end{bmatrix}
+                                            = 
+                                            \begin{bmatrix}
+                                            0 & 1 \\ 
+                                            -\frac{k}{m} & -\frac{c}{m}   
+                                            \end{bmatrix}
+                                            \begin{bmatrix}
+                                            y_1 \\ 
+                                            y_2 
+                                            \end{bmatrix}
+                                            `} />
+                        <BlockMath math="p = a_{11} + a_{22} = -\frac{c}{m}" />
+                        <BlockMath math="q = det(A) = \frac{k}{m}" />
+                        <BlockMath math="\Delta = p^2 - 4q = \frac{c^2}{m^2} - \frac{4k}{m}
+                                                    = \frac{c^2 - 4mk}{m^2}" />
+
+                        <h3>No Damping: <InlineMath math="c = 0" /> </h3>
+                        <BlockMath math="p = 0" />
+                        <BlockMath math="q = \frac{k}{m} > 0" />
+                        <BlockMath math="\Delta = -\frac{4k}{m} < 0" />
+                        <p>Center.</p>
+
+                        <h3>Under Damping: <InlineMath math="c^2 < 4mk" /> </h3>
+                        <BlockMath math="p = -\frac{c}{m} < 0" />
+                        <BlockMath math="q = \frac{k}{m} > 0" />
+                        <BlockMath math="\Delta = -\frac{c^2 - 4mk}{m^2} < 0" />
+                        <p>Stable spiral.</p>
+
+                        <h3>Critical Damping: <InlineMath math="c^2 = 4mk" /> </h3>
+                        <BlockMath math="p = -\frac{c}{m} < 0" />
+                        <BlockMath math="q = \frac{k}{m} > 0" />
+                        <BlockMath math="\Delta = 0" />
+                        <p>Stable degenerated node.</p>
+
+                        <h3>Over Damping: <InlineMath math="c^2 > 4mk " /> </h3>
+                        <BlockMath math="p = -\frac{c}{m} < 0" />
+                        <BlockMath math="q = \frac{k}{m} > 0" />
+                        <BlockMath math="\Delta = -\frac{c^2 - 4mk}{m^2} > 0" />
+                        <p>Stable spiral.</p>
+
                     </div>
                     <br />
                 </Container>
