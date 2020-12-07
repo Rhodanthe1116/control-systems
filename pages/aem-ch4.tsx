@@ -107,12 +107,17 @@ const Chapter = ({ allPosts }: Props) => {
                             <InlineMath math="\%overshoot = e^{-(\zeta\pi / \sqrt{1 - \zeta^2})} * 100 = \ " />
                             <InlineMath math={`${Tp.toFixed(fixed)}`} />
                             <br />
-                            <p>
-                                Ts = 4 / (damp * omegan) = {Ts.toFixed(fixed)}
-                            </p>
-                            <p>
-                                Tr = (0.8 + 2.5 * damp) / omegan = {Tr.toFixed(fixed)}
-                            </p>
+                            
+                            <br />
+                            <InlineMath math="Ts = \frac{4}{\zeta \omega_n} = \ " />
+                            <InlineMath math={`${Ts.toFixed(fixed)}`} />
+                            <br />
+
+                            <br />
+                            <InlineMath math=" Tr = \frac{0.8 + 2.5 * \zeta}  {\omega_n} = \ " />
+                            <InlineMath math={`${Tr.toFixed(fixed)}`} />
+                            <br />
+                            
                         </div>
                         <div className="w-full">
 
