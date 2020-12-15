@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import algebra, { Fraction, Expression } from 'algebra.js';
-import { rlocusPlotData } from '../lib/control'
-// import nerdamer from 'nerdamer'
+import { useState, useEffect } from 'react'
+import control, { rlocusPlotData } from '../lib/control'
+import nerdamer from 'nerdamer';
+import { complex, Complex } from 'mathjs';
+
 // import  '../types/nerdamer'
 
 import 'katex/dist/katex.min.css';
@@ -11,19 +12,14 @@ import Post from '../types/post'
 
 import Head from 'next/head'
 import { ResponsiveLine } from '@nivo/line'
-import { ScatterPlot } from '@nivo/scatterplot'
+import { ScatterPlot, Serie } from '@nivo/scatterplot'
 import Container from '../components/container'
 import Intro from '../components/intro'
 import Layout from '../components/layout'
-import { isNumber } from 'util';
 
 const { InlineMath, BlockMath } = require('react-katex');
 
 const { sqrt, exp, PI, cos, sin, min } = Math
-
-type Props = {
-    allPosts: Post[]
-}
 
 type System = {
     numerator: string,
@@ -43,11 +39,11 @@ function generateDataFromFunction(f: (t: number) => number, start: number, end: 
     ]
 }
 
-function scatterDataFromRoot(id: string, arr: number[]) {
+function scatterDataFromRoot(id: string, arr: Complex[]) {
     let data = []
-    data = arr.map((item: number) => {
+    data = arr.map((comp: Complex) => {
         return {
-            x: item, y: 0
+            x: comp.re, y: comp.im
         }
     })
     return {
@@ -58,16 +54,22 @@ function scatterDataFromRoot(id: string, arr: number[]) {
 
 
 
-const Chapter = ({ allPosts }: Props) => {
+const Chapter = () => {
     const [numeratorInput, setNumeratorInput] = useState<string>('(s + 1)(s + 2)');
     const [numerator, setNumerator] = useState<string>('(s + 1)(s + 2)');
     const [denominatorInput, setDenominatorInput] = useState<string>('(s - 1)(s - 2)');
     const [denominator, setDenominator] = useState<string>('(s - 1)(s - 2)');
+    const [rlocusData, setRlocusData] = useState<Serie>({ id: 'rlocus', data: [{ x: 0, y: 0 }] });
+    useEffect(() => {
+        const newRlocusData = rlocusPlotData({ numerator: numerator, denominator: denominator }, { start: 0.01, end: 100, step: 1.5 })
+        setRlocusData(newRlocusData)
+    }, [numerator, denominator])
+    const [valid, setValid] = useState(true)
 
     const [zerosInput, setZerosInput] = useState<string>('[-1, -2]');
-    const [zeros, setZeros] = useState<number[]>([-1, -2]);
+    const [zeros, setZeros] = useState<Complex[]>([complex(-1, 0), complex(-2, 0)]);
     const [polesInput, setPolesInput] = useState<string>('[1, 2]');
-    const [poles, setPoles] = useState<number[]>([1, 2]);
+    const [poles, setPoles] = useState<Complex[]>([complex(1, 0), complex(2, 0)]);
 
     const [damp, setDamp] = useState<number>(0.7);
     const [omegan, setOmegan] = useState<number>(1);
@@ -80,76 +82,35 @@ const Chapter = ({ allPosts }: Props) => {
     const sigmad = damp * omegan
     const c = (t: number) => k - exp(-damp * omegan * t) * (cos(omegan * sqrt(1 - damp ** 2) * t) + (damp / sqrt(1 - damp ** 2)) * sin(omegan * sqrt(1 - damp ** 2) * t))
 
-    const Cfinal = 1
     const k = 1
     const fixed = 3;
     function handleNumeratorInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         const input = e.currentTarget.value
-
-        let newZeros = zeros
-        try {
-            const lhs = algebra.parse(input);
-
-            const eq = new algebra.Equation(lhs as Expression, 0);
-            const answer = eq.solveFor("s");
-
-            let newValue = numerator
-            if (answer instanceof Array) {
-                if (answer[0] instanceof algebra.Fraction) {
-
-                    newZeros = (answer as Fraction[]).map(item => {
-                        return item.numer / item.denom
-                    })
-                } else {
-                    newZeros = (answer as number[])
-                }
-
-            } else {
-                newZeros = [answer.numer / answer.denom]
-            }
-
-            setNumerator(input)
-            setZeros(newZeros)
-        } catch (e) {
-            console.error(e)
-        }
-
         setNumeratorInput(input)
 
+        try {
+            setValid(Boolean(nerdamer(input)))
+            setNumerator(input)
+            setZeros(control.zeros({ numerator: input, denominator: denominator }))
+        } catch (e) {
+            console.error(e)
+            setValid(false)
+        }
     }
 
     function handleDenominatorInputChange(e: React.ChangeEvent<HTMLInputElement>) {
         const input = e.currentTarget.value
+        setDenominatorInput(input)
 
         let newPoles = poles
         try {
-            const lhs = algebra.parse(input);
-
-            const eq = new algebra.Equation(lhs as Expression, 0);
-            const answer = eq.solveFor("s");
-
-            let newValue = numerator
-            if (answer instanceof Array) {
-                if (answer[0] instanceof algebra.Fraction) {
-
-                    newPoles = (answer as Fraction[]).map(item => {
-                        return item.numer / item.denom
-                    })
-                } else {
-                    newPoles = (answer as number[])
-                }
-
-            } else {
-                newPoles = [answer.numer / answer.denom]
-            }
-
+            setValid(Boolean(nerdamer(input)))
             setDenominator(input)
-            setPoles(newPoles)
+            setPoles(control.poles({ numerator: numerator, denominator: input }))
         } catch (e) {
             console.error(e)
+            setValid(false)
         }
-
-        setDenominatorInput(input)
     }
 
     function handleZerosInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -182,7 +143,8 @@ const Chapter = ({ allPosts }: Props) => {
 
     const zeroData = scatterDataFromRoot('zeros', zeros)
     const poleData = scatterDataFromRoot('poles', poles)
-    const rlocusData = rlocusPlotData({ numerator: numerator, denominator: denominator }, { start: 0.01, end: 30, step: 2 })
+
+
     return (
         <>
             <Layout>
@@ -212,6 +174,7 @@ const Chapter = ({ allPosts }: Props) => {
                             <BlockMath math="\omega_n = \sqrt{b}" />
 
                             <br />
+                            <h3>{valid ? 'Valid' : 'Invalid'}</h3>
                             <div className="slidecontainer">
                                 numerator {numerator}
                                 <br />
@@ -225,12 +188,12 @@ const Chapter = ({ allPosts }: Props) => {
                             <div className="slidecontainer">
                                 zeros {zeros.toString()}
                                 <br />
-                                <input value={zerosInput} onChange={handleZerosInputChange} />
+                                {/* <input value={zerosInput} onChange={handleZerosInputChange} /> */}
                             </div>
                             <div className="slidecontainer">
                                 poles {poles.toString()}
                                 <br />
-                                <input value={polesInput} onChange={handlePolesInputChange} />
+                                {/* <input value={polesInput} onChange={handlePolesInputChange} /> */}
                             </div>
                             <div className="slidecontainer">
                                 Natural Frequency Omegan {omegan}
