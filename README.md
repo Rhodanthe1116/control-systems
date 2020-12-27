@@ -19,6 +19,19 @@ Interactive control toolbox for learning control theory and designing system.
 
 ## Reference
 
-- https://mathjs.org/
+### Math UI
+
 - https://katex.org/
 - https://github.com/talyssonoc/react-katex
+
+### Math
+
+- https://mathjs.org/
+- https://github.com/python-control/python-control/
+- https://github.com/stdlib-js/stdlib
+- https://github.com/tensorflow/tfjs
+
+## Problems
+
+- is stdlib a good library to use?
+- how tenserflow.js handle math problems?

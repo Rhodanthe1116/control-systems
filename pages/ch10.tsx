@@ -7,7 +7,7 @@ import { complex, Complex } from 'mathjs';
 
 import 'katex/dist/katex.min.css';
 import markdownStyles from '../components/markdown-styles.module.css'
-
+ 
 import Post from '../types/post'
 
 import Head from 'next/head'
@@ -192,9 +192,9 @@ const Chapter = () => {
                         <h2>Ex:</h2>
                         <BlockMath math="G(s) = (s + a)" />
                         <BlockMath math="20log|G(j\omega)| = 20log(a^2 + \omega^2)^{1/2}" />
-                        <p>At high frequency at w >> a</p>
+                        <p>At high frequency at w {'>>'}  a</p>
                         <BlockMath math="20log|G(j\omega)| = 20loga" />
-                        <p>At high frequency at w >> a</p>
+                        <p>At high frequency at w {'>>'}  a</p>
                         <BlockMath math="20log|G(j\omega)| = 20log\omega" />
                         <p>Decade: 10 times the initial frequency, i.e. 1 decade = 10^0 ~ 10^1 Hz or rad/sec</p>
                         <p>Phase: 0 at w = 0.1a, 45 at w = a, 90 at w = 10a</p>
