@@ -211,7 +211,7 @@ const Chapter = () => {
                             <br />
 
                             <InlineMath math="\%overshoot = e^{-(\zeta\pi / \sqrt{1 - \zeta^2})} * 100 = \ " />
-                            <InlineMath math={`${Tp.toFixed(fixed)}`} />
+                            <InlineMath math={`${overshoot.toFixed(fixed)}`} />
                             <br />
 
                             <br />
